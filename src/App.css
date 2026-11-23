@@ -1,0 +1,174 @@
+/* ---------- Design tokens (CSS variables) ---------- */
+:root {
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --text: #1c2230;
+  --muted: #6b7385;
+  --border: #e3e7ee;
+  --accent: #4f6bed;
+  --accent-text: #ffffff;
+  --bot-bubble: #f1f3f8;
+  --error: #d64545;
+  --online: #2fb36b;
+  --radius: 18px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+}
+
+/* Dark mode follows the operating system setting automatically */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1219;
+    --panel: #181c26;
+    --text: #e6e9f0;
+    --muted: #8d95a8;
+    --border: #262b38;
+    --accent: #6d84ff;
+    --bot-bubble: #222838;
+    --error: #ff7070;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+/* ---------- Layout ---------- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.chat-window {
+  width: 100%;
+  max-width: 440px;
+  height: min(720px, calc(100vh - 32px));
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(20, 30, 60, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.bot-identity { display: flex; align-items: center; gap: 10px; }
+.chat-header h1 { font-size: 16px; margin: 0; }
+.status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--online); }
+
+.clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.clear-btn:hover { color: var(--text); border-color: var(--muted); }
+
+.avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bot-bubble);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.avatar.small { width: 28px; height: 28px; font-size: 15px; }
+
+/* ---------- Messages ---------- */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message-row { display: flex; align-items: flex-end; gap: 8px; animation: pop-in 0.2s ease-out; }
+.message-row.from-user { justify-content: flex-end; }
+
+.bubble {
+  max-width: 78%;
+  padding: 9px 13px;
+  border-radius: var(--radius);
+  line-height: 1.4;
+  font-size: 14.5px;
+  word-wrap: break-word;
+}
+.bubble p { margin: 0; white-space: pre-wrap; }
+.bubble .time { display: block; font-size: 10.5px; opacity: 0.65; margin-top: 4px; text-align: right; }
+
+.bubble-user { background: var(--accent); color: var(--accent-text); border-bottom-right-radius: 5px; }
+.bubble-bot  { background: var(--bot-bubble); border-bottom-left-radius: 5px; }
+.bubble-error { color: var(--error); border: 1px solid var(--error); }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Typing indicator ---------- */
+.typing { display: flex; gap: 4px; padding: 13px 14px; }
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted);
+  animation: bounce 1.2s infinite ease-in-out;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ---------- Input ---------- */
+.chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.chat-input input {
+  flex: 1;
+  padding: 11px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14.5px;
+  outline: none;
+}
+.chat-input input:focus { border-color: var(--accent); }
+.chat-input button {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 16px;
+  cursor: pointer;
+}
+.chat-input button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .message-row, .dot { animation: none; }
+}
